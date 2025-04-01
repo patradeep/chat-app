@@ -16,14 +16,14 @@ cloudinary.config({
   // Remove the upload_preset line
 });
 
-router.post('/login', login);
+router.post('./login', login);
 
-router.post('/signup', signup)
+router.post('./signup', signup)
 
-router.post('/logout', logout)
+router.post('./logout', logout)
 
-router.put('/update-profile', auth, upload.single('avatar'), updateProfile);
+router.put('./update-profile', auth, upload.single('avatar'), updateProfile);
 
-router.get('/check',auth, chakeAuth)
+router.get('./check',auth, chakeAuth)
 
 export default router;
