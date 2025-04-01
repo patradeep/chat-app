@@ -11,9 +11,11 @@ const port = process.env.PORT || 5001;
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://chat-b39egq4i5-patradeeps-projects.vercel.app' 
-    : 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'https://chat-b39egq4i5-patradeeps-projects.vercel.app',
+    'https://chat-kck48ojkq-patradeeps-projects.vercel.app'
+  ],
   credentials: true,
 }))
 
