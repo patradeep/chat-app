@@ -19,11 +19,11 @@ app.use(cors({
   credentials: true,
 }))
 
-app.get('./', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Hello World!');
 });
-app.use('./auth', authRoutes);
-app.use('./message', messageRoutes);
+app.use('/auth', authRoutes);
+app.use('/message', messageRoutes);
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
   connectDB()
