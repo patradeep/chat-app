@@ -13,8 +13,9 @@ app.use(cookieParser());
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://chat-b39egq4i5-patradeeps-projects.vercel.app',
-    'https://chat-kck48ojkq-patradeeps-projects.vercel.app'
+    'https://chat-1u7aq1ylt-patradeeps-projects.vercel.app',
+    'https://chat-app-two-jade-56.vercel.app',
+    'https://chat-app-git-main-patradeeps-projects.vercel.app/signup'
   ],
   credentials: true,
 }))
