@@ -14,7 +14,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'https://chat-1u7aq1ylt-patradeeps-projects.vercel.app',
   'https://chat-app-two-jade-56.vercel.app',
-  'https://chat-app-git-main-patradeeps-projects.vercel.app/signup'
+  'https://chat-app-git-main-patradeeps-projects.vercel.app/signup',
+  'https://chat-app-frontent.onrender.com'
 ];
 app.use(express.json());
 app.use(cookieParser());
