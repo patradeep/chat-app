@@ -14,15 +14,33 @@ const allowedOrigins = [
   'http://localhost:5173',
   'https://chat-1u7aq1ylt-patradeeps-projects.vercel.app',
   'https://chat-app-two-jade-56.vercel.app',
-  'https://chat-app-git-main-patradeeps-projects.vercel.app/signup',
-  'https://chat-app-frontent.onrender.com'
+  'https://chat-app-frontent.onrender.com',
 ];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    const isAllowedOrigin =
+      allowedOrigins.includes(origin) ||
+      /^https:\/\/[a-z0-9-]+\.onrender\.com$/i.test(origin) ||
+      /^http:\/\/localhost:\d+$/i.test(origin);
+
+    if (isAllowedOrigin) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+};
+
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}))
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -32,7 +50,7 @@ app.use('/message', messageRoutes);
 const server = createServer(app);
 initSocketIo(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: corsOptions.origin,
     credentials: true,
   },
 });

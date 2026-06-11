@@ -73,7 +73,7 @@ export const useAuthStore = create((set) => ({
             toast.success("User created successfully")
         }
     } catch (error) {
-        toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || error.message || 'Signup failed')
         set({authUser: null})
     }finally{
         set({isSignup: false})
@@ -89,7 +89,7 @@ export const useAuthStore = create((set) => ({
             toast.success("User logged in successfully")
         }
     } catch (error) {
-        toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || error.message || 'Login failed')
         set({authUser: null})
     }finally{
         set({isLoggedIn: false})
@@ -105,7 +105,7 @@ export const useAuthStore = create((set) => ({
             toast.success("User logged out successfully")
         }
     } catch (error) {
-        toast.error(error.response.data.message)
+      toast.error(error.response?.data?.message || error.message || 'Logout failed')
         set({authUser: null})
     }
   },
