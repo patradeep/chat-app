@@ -139,26 +139,6 @@ export function initSocketIo(server, options = {}) {
 			relaySignal(socket, 'stopTyping', payload);
 		});
 
-		socket.on('call:offer', (payload = {}) => {
-			relaySignal(socket, 'call:offer', payload);
-		});
-
-		socket.on('call:answer', (payload = {}) => {
-			relaySignal(socket, 'call:answer', payload);
-		});
-
-		socket.on('call:iceCandidate', (payload = {}) => {
-			relaySignal(socket, 'call:iceCandidate', payload);
-		});
-
-		socket.on('call:reject', (payload = {}) => {
-			relaySignal(socket, 'call:reject', payload);
-		});
-
-		socket.on('call:end', (payload = {}) => {
-			relaySignal(socket, 'call:end', payload);
-		});
-
 		socket.on('disconnect', () => {
 			trackSocketLeave(socket);
 		});

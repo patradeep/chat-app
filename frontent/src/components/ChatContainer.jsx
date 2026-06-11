@@ -4,7 +4,6 @@ import { useAuthStore } from "../store/useAuthStore";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import { User } from "lucide-react";
-import CallModal from "./CallModal";
 
 function ChatContainer() {
   const { isMessagesLoading, chats, getMessages, selectUser } = useChatStore();
@@ -34,7 +33,6 @@ function ChatContainer() {
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
-      <CallModal />
       <ChatHeader />
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {isMessagesLoading ? (
