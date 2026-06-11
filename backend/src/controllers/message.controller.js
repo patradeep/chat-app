@@ -1,6 +1,8 @@
 import cloudinary from '../lib/coludinary.js';
 import Message from '../models/message.model.js';
 import User  from '../models/user.model.js';
+import { checkMessageSafety } from '../lib/messageSafety.js';
+import { emitToUser } from './socket.js';
 
 export const getUsersForChat = async (req, res) => {
     try {
@@ -34,6 +36,17 @@ export const sendMessage = async (req, res) => {
         const {id:receiverId}=req.params;
         const senderId=req.user._id;
         const {text,image}=req.body;
+
+        const safetyCheck = await checkMessageSafety(text);
+        if (!safetyCheck.allowed) {
+            return res.status(400).json({
+                message: safetyCheck.reason || 'Message flagged as unsafe',
+                safety: {
+                    allowed: false,
+                },
+            });
+        }
+
         let imageUrl;
         if(image){
             // Upload image to cloudinary and get the secure URL
@@ -47,6 +60,7 @@ export const sendMessage = async (req, res) => {
             image:imageUrl
         });
         await newMessage.save();
+        emitToUser(receiverId, 'new-message', newMessage);
 
         res.status(200).json(newMessage);
     } catch (error) {

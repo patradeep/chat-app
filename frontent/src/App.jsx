@@ -20,6 +20,15 @@ function App() {
   useEffect(()=>{
     checkAuth();
   },[checkAuth])
+
+  useEffect(() => {
+    if (authUser?.user?._id) {
+      useAuthStore.getState().connectSocket();
+      return;
+    }
+
+    useAuthStore.getState().disconnectSocket();
+  }, [authUser]);
   console.log(authUser);
   if(isCheckingAuth){
     return (

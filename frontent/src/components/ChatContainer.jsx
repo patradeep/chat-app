@@ -4,10 +4,11 @@ import { useAuthStore } from "../store/useAuthStore";
 import ChatHeader from "./ChatHeader";
 import ChatInput from "./ChatInput";
 import { User } from "lucide-react";
+import CallModal from "./CallModal";
 
 function ChatContainer() {
   const { isMessagesLoading, chats, getMessages, selectUser } = useChatStore();
-  const { authUser } = useAuthStore();
+  const { authUser, socket } = useAuthStore();
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -15,6 +16,13 @@ function ChatContainer() {
       getMessages(selectUser._id);
     }
   }, [selectUser, getMessages]);
+
+  useEffect(() => {
+    const unsubscribe = useChatStore.getState().subscribeToSocketEvents();
+    return () => {
+      unsubscribe?.();
+    };
+  }, [socket]);
 
   useEffect(() => {
     scrollToBottom();
@@ -26,6 +34,7 @@ function ChatContainer() {
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
+      <CallModal />
       <ChatHeader />
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {isMessagesLoading ? (

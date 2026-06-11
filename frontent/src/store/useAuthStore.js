@@ -1,6 +1,9 @@
 import {create} from 'zustand'
 import { axiosInstance } from '../lib/axios';
 import toast from 'react-hot-toast';
+import { io } from 'socket.io-client';
+
+let socket = null;
 
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -9,6 +12,44 @@ export const useAuthStore = create((set) => ({
   isUpdateProfile: false,
   isCheckingAuth: true,
   onlineUsers: [],
+  socket: null,
+
+  connectSocket: () => {
+    const { authUser, socket: currentSocket } = useAuthStore.getState();
+
+    if (!authUser?.user?._id || currentSocket) {
+      return currentSocket;
+    }
+
+    const socketUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL;
+    socket = io(socketUrl, {
+      withCredentials: true,
+      auth: {
+        token: localStorage.getItem('token'),
+      },
+    });
+
+    socket.on('online-users', (onlineUsers) => {
+      useAuthStore.setState({ onlineUsers });
+    });
+
+    socket.on('disconnect', () => {
+      useAuthStore.setState({ socket: null });
+    });
+
+    useAuthStore.setState({ socket });
+    return socket;
+  },
+
+  disconnectSocket: () => {
+    if (socket) {
+      socket.disconnect();
+      socket = null;
+    }
+
+    set({ socket: null, onlineUsers: [] });
+  },
+
   checkAuth: async()=>{
     try {
         const response = await axiosInstance.get('/auth/check');
@@ -60,6 +101,7 @@ export const useAuthStore = create((set) => ({
         const response = await axiosInstance.post('/auth/logout');
         if(response.data){
             set({authUser: null})
+        useAuthStore.getState().disconnectSocket();
             toast.success("User logged out successfully")
         }
     } catch (error) {

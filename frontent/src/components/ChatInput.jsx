@@ -8,11 +8,15 @@ function ChatInput() {
     const [imagePreview, setImagePreview] = useState(null);
     const [file, setFile] = useState(null);
     const [isSending, setIsSending] = useState(false);
+    const [messageWarning, setMessageWarning] = useState('');
     const fileInputRef = useRef(null);
     const { sendMessage, selectUser } = useChatStore();
     
     const handleImageChange = (e) => {
         const selectedFile = e.target.files[0];
+        if (!selectedFile) {
+            return;
+        }
         if(!selectedFile.type.startsWith('image/')) {
             toast.error('Please select an image file.');
             return;
@@ -23,11 +27,13 @@ function ChatInput() {
         }
         reader.readAsDataURL(selectedFile);
         setFile(selectedFile);
+        setMessageWarning('');
     }
     
     const removeImage = () => {
         setImagePreview(null);
         setFile(null);
+        setMessageWarning('');
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -39,6 +45,7 @@ function ChatInput() {
         if ((!text.trim() && !file) || !selectUser) return;
         
         setIsSending(true);
+        setMessageWarning('');
         
         try {
             await sendMessage({
@@ -49,9 +56,18 @@ function ChatInput() {
             setText('');
             removeImage();
         } catch (error) {
-            console.error('Error sending message:', error);
+            const errorMessage = error.response?.data?.message || error.message || 'Message could not be sent';
+            setMessageWarning(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setIsSending(false);
+        }
+    }
+
+    const handleTextChange = (e) => {
+        setText(e.target.value);
+        if (messageWarning) {
+            setMessageWarning('');
         }
     }
     
@@ -92,7 +108,7 @@ function ChatInput() {
                 <input
                     type="text"
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={handleTextChange}
                     placeholder="Type a message..."
                     className="input input-bordered flex-1"
                     disabled={isSending}
@@ -110,6 +126,9 @@ function ChatInput() {
                     )}
                 </button>
             </form>
+            {messageWarning && (
+                <p className="mt-2 text-sm text-error">{messageWarning}</p>
+            )}
         </div>
     )
 }
