@@ -14,27 +14,28 @@ function ChatContainer() {
     if (selectUser?._id) {
       getMessages(selectUser._id);
     }
-  }, [selectUser, getMessages]);
+  }, [selectUser]);
 
   useEffect(() => {
     const unsubscribe = useChatStore.getState().subscribeToSocketEvents();
-    return () => {
-      unsubscribe?.();
-    };
+    return () => unsubscribe?.();
   }, [socket]);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <div className="flex-1 flex flex-col overflow-auto">
-      <ChatHeader />
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex-1 flex flex-col h-full">
+
+      {/* Header (fixed top) */}
+      <div className="shrink-0">
+        <ChatHeader />
+      </div>
+
+      {/* Messages (scrollable area) */}
+      <div className="flex-1 overflow-y-auto p-2 space-y-4">
+
         {isMessagesLoading ? (
           <div className="flex justify-center items-center h-full">
             <div className="loading loading-spinner loading-md"></div>
@@ -50,21 +51,19 @@ function ChatContainer() {
                     : "chat-start"
                 }`}
               >
+                {/* Avatar */}
                 <div className="chat-image avatar">
                   <div className="w-10 h-10 rounded-full">
                     {chat.senderId === authUser?.user?._id ? (
                       authUser?.user?.avatar ? (
-                        <img
-                          src={authUser.user.avatar}
-                          alt={authUser.user.fullname}
-                        />
+                        <img src={authUser.user.avatar} />
                       ) : (
                         <div className="bg-primary flex items-center justify-center w-full h-full">
                           <User className="text-white" size={20} />
                         </div>
                       )
                     ) : selectUser?.avatar ? (
-                      <img src={selectUser.avatar} alt={selectUser.fullname} />
+                      <img src={selectUser.avatar} />
                     ) : (
                       <div className="bg-primary flex items-center justify-center w-full h-full">
                         <User className="text-white" size={20} />
@@ -72,6 +71,8 @@ function ChatContainer() {
                     )}
                   </div>
                 </div>
+
+                {/* Message */}
                 <div
                   className={`px-4 py-3 rounded-lg max-w-xs md:max-w-md ${
                     chat.senderId === authUser?.user?._id
@@ -80,18 +81,17 @@ function ChatContainer() {
                   }`}
                 >
                   {chat.text}
+
                   {chat.image && (
-                    <div className="mt-2">
-                      <img
-                        src={chat.image}
-                        alt="Message attachment"
-                        className="rounded-md w-full"
-                        onClick={() => window.open(chat.image, "_blank")}
-                        style={{ cursor: "pointer" }}
-                      />
-                    </div>
+                    <img
+                      src={chat.image}
+                      className="mt-2 rounded-md w-full cursor-pointer"
+                      onClick={() => window.open(chat.image, "_blank")}
+                    />
                   )}
                 </div>
+
+                {/* Time */}
                 <div className="chat-footer opacity-50 text-xs">
                   {new Date(chat.createdAt).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -100,6 +100,7 @@ function ChatContainer() {
                 </div>
               </div>
             ))}
+
             <div ref={messagesEndRef} />
           </>
         ) : (
@@ -111,7 +112,12 @@ function ChatContainer() {
           </div>
         )}
       </div>
-      <ChatInput />
+
+      {/* Input (fixed bottom) */}
+      <div className="shrink-0">
+        <ChatInput />
+      </div>
+
     </div>
   );
 }

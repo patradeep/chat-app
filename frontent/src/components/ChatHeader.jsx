@@ -5,14 +5,20 @@ import { User } from 'lucide-react'
 
 function ChatHeader() {
     const { onlineUsers } = useAuthStore()
-    const { selectUser } = useChatStore()
+    const { selectUser,setSelectUser } = useChatStore()
     
     const isUserOnline = onlineUsers.includes(selectUser?._id)
     
     return (
-        <div className="p-4 border-b border-base-300 flex justify-between items-center">
+        <div className="p-4 mt-4 bg-gray-200 border-b border-base-300 flex justify-between items-center">
             <div className="flex items-center">
                 <div className="avatar mr-3">
+                    <button
+                        onClick={() => setSelectUser(null)}
+                        className="md:hidden text-lg"
+                        >
+                        ←
+                    </button>
                     <div className="w-10 h-10 rounded-full relative">
                         {selectUser?.avatar ? (
                             <img src={selectUser.avatar} alt={selectUser.fullname} />
@@ -22,7 +28,7 @@ function ChatHeader() {
                             </div>
                         )}
                         {isUserOnline && (
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-base-100"></span>
+                            <span className="absolute bottom-0 right-1 w-3 h-3 bg-success rounded-full border-2 border-base-100"></span>
                         )}
                     </div>
                 </div>

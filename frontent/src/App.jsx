@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import { useAuthStore } from './store/useAuthStore'
 import {Loader} from 'lucide-react'
 import { Toaster } from'react-hot-toast';
+import './index.css'
 
 function App() {
   useEffect(() => {
@@ -40,7 +41,7 @@ function App() {
   
   
   return (
-    <>
+    <div className='app'>
     <Navbar/>
 
     <Routes>
@@ -55,7 +56,7 @@ function App() {
     </Routes>
 
     <Toaster/>
-    </>
+    </div>
   )
 }
 

@@ -7,7 +7,7 @@ function Navbar() {
   const { logout1, authUser } = useAuthStore();
 
   return (
-    <div className="navbar bg-base-100 shadow-sm">
+    <div className="navbar fixed top-0 left-0 right-0 bg-base-100 shadow-sm">
       <div className="flex-1">
         <Link to="/" className="btn btn-ghost normal-case text-xl">
           <span className="text-primary">Chat</span>App

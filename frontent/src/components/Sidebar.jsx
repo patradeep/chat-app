@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { useChatStore } from '../store/useChatStore'
-import { Search, Plus, User } from 'lucide-react'
-import { useAuthStore } from '../store/useAuthStore'
+import { Search, User } from 'lucide-react'
 
 function Sidebar() {
     const { setSelectUser, users, getUsers, isUsersLoading, selectUser } = useChatStore()
-    const { authUser } = useAuthStore()
     const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
         getUsers()
-    }, [getUsers])
+    }, [])
 
     const filteredUsers = users.filter(user => 
         user.fullname.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     return (
-        <div className="w-1/3 border-r border-base-300 flex flex-col">
-            <div className="p-4 border-b border-base-300">
+        <div className="w-full h-full border-r border-base-300 flex flex-col">
+
+            {/* Search */}
+            <div className="p-2 border-b border-base-300">
                 <div className="relative">
                     <input
                         type="text"
@@ -31,6 +31,7 @@ function Sidebar() {
                 </div>
             </div>
             
+            {/* User List */}
             <div className="overflow-y-auto flex-1">
                 {isUsersLoading ? (
                     <div className="flex justify-center items-center h-full">
@@ -45,21 +46,22 @@ function Sidebar() {
                             }`}
                             onClick={() => setSelectUser(user)}
                         >
+                            {/* Avatar */}
                             <div className="avatar mr-3">
                                 <div className="w-12 h-12 rounded-full">
                                     {user.avatar ? (
-                                        <img src={user.avatar} alt={user.fullname} />
+                                        <img src={user.avatar} />
                                     ) : (
-                                        <div className="bg-primary flex items-center justify-center">
+                                        <div className="bg-primary flex items-center justify-center w-full h-full">
                                             <User className="text-white" size={24} />
                                         </div>
                                     )}
                                 </div>
                             </div>
+
+                            {/* Info */}
                             <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-baseline">
-                                    <h3 className="font-medium truncate">{user.fullname}</h3>
-                                </div>
+                                <h3 className="font-medium truncate">{user.fullname}</h3>
                                 <p className="text-sm text-gray-500 truncate">{user.email}</p>
                             </div>
                         </div>
@@ -79,25 +81,7 @@ function Sidebar() {
                 )}
             </div>
             
-            <div className="p-4 border-t border-base-300">
-                <div className="flex items-center p-2 rounded-lg bg-base-200">
-                    <div className="avatar mr-3">
-                        <div className="w-10 h-10 rounded-full">
-                            {authUser?.user?.avatar ? (
-                                <img src={authUser.user.avatar} alt={authUser.user.fullname} />
-                            ) : (
-                                <div className="bg-primary flex items-center justify-center">
-                                    <User className="text-white" size={20} />
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <h3 className="font-medium truncate">{authUser?.user?.fullname || 'User'}</h3>
-                        <p className="text-xs text-gray-500 truncate">Online</p>
-                    </div>
-                </div>
-            </div>
+
         </div>
     )
 }
